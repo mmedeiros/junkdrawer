@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+#Write a program that prints the numbers from 1 to 100. But for multiples of
+#three print "Fizz" instead of the number and for the multiples of five print
+#"Buzz". For numbers which are multiples of both three and five print "FizzBuzz". 
+
+my @array = (1..100); 
+foreach $i (@array) {
+
+	if (($i%3==0) and ($i%5==0)) { 
+			print "fizzbuzz\n";
+	} elsif ($i%3==0) {
+			print "fizz\n"
+	} elsif ($i%5==0) {
+			print "buzz\n"
+		} else {
+			print "$i\n";
+		}
+	}
