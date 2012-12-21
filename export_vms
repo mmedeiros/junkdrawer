@@ -1,0 +1,30 @@
+#!/usr/bin/perl 
+
+# This script dumps the system and volume information 
+# for kvm hypervisors. Allowing them to be quickly rebuilt 
+
+my $img_dir = "/dev/vms";
+my $storage_dir = "/tmp/tx_vm_export";
+
+#open(VMS, "virsh list --all|") or die  "can't open data file \n"; # the real deal 
+open(VMS, "cat /Users/mmedeiros/Desktop/kvm_dummy_data.txt|") or die  "can't open data file \n"; # for testing
+
+# Let's make sure things exist before we try to write to them 
+unless (-d $storage_dir) { 
+	print "$storage_dir does not exist!\n" and die 
+}
+
+while (<VMS>) {
+        chomp $_ ;
+        # sample input format 
+        #  3 prod-web01.example.org running$
+
+        #(\s+)(\d+)() 
+        
+        if ($_ !~m/Id Name\s+State|----------|^$/i) { 
+        				my @fields = (split/\s/=>$_);
+                my $vm_name = $fields[3];
+                print "virsh dumpxml $vm_name > $storage_dir/${vm_name}_host.xml\n";
+                print "virsh vol-dumpxml $img_dir/${vm_name}.img > $storage_dir/${vm_name}_volume.xml\n";
+        }
+}
