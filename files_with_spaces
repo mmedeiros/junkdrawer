@@ -1,0 +1,12 @@
+#!/usr/bin/perl 
+
+my @dir = `ls`;
+
+foreach my $i (@dir) {
+	if ($i =~m/$ARGV[0]/i && $i !~m/~$/i) {
+			$i =~s/\s/\\ /g;
+			$i =~m/^(.*)\\/;
+			my $file = $1; 
+			print "$file\n"; 
+	}
+}
