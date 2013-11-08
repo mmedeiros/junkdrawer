@@ -1,11 +1,35 @@
 #!/usr/bin/perl
 use strict;
+use Getopt::Long qw(GetOptions);
 
 my $count;
+my $default_name = "/dev/md0";
 my @disks;
+my %options; 
+my $usage = "Usage: $0 \n";
+if ( ! GetOptions(\%options,
+		'raid_level=i',
+		'name=s')
+    ) { 
+  usage() and die("$!");
+}
+
+if (not defined $options{raid_level}) { 
+	$options{raid_level} = 10; 
+}
+
+if (not defined $options{name}) { 
+	$options{name} = $default_name; 
+}
+
+if ($options{name} =!m/^\/dev\//) { 
+	print "names must start with \"/dev/\", resetting to default $default_name\n";
+	#print "that ain't how you name shit you clown!\n";
+	$options{name} = "/dev/md0";
+}
 
 # output needs to look like 
-# mdadm -v --create /dev/md0 --level=raid10 --raid-devices=$number_of_drives $list_of_drives 
+# mdadm -v --create /dev/md0 --level=raid$raid_level --raid-devices=$number_of_drives $list_of_drives 
 
 open(FH,"fdisk -l 2>/dev/null | "); 
 while ( <FH> ) { 
@@ -14,9 +38,9 @@ while ( <FH> ) {
 	# Disk /dev/sdae: 3000.6 GB, 3000592982016 bytes	
 	# then we need /dev/sdk portion
 	if ($_ =~m/^Disk\s(\/dev\/\w+):.*3000.6.*bytes/) { 
-	push (@disks, $1);
-  }
+		push (@disks, $1);
+	}
 } 
 
 $count = scalar (@disks); 
-print "mdadm -v --create /dev/md0 --level=raid10 --raid-devices=$count @disks\n" 
+print "mdadm -v --create $options{name} --level=raid$options{raid_level} --raid-devices=$count @disks\n" 
