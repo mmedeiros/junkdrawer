@@ -22,10 +22,10 @@ if (not defined $options{name}) {
 	$options{name} = $default_name; 
 }
 
-if ($options{name} =!m/^\/dev\//) { 
+if ($options{name} !~m/^\/dev/) { 
 	print "names must start with \"/dev/\", resetting to default $default_name\n";
 	#print "that ain't how you name shit you clown!\n";
-	$options{name} = "/dev/md0";
+	$options{name} = $default_name;
 }
 
 # output needs to look like 
