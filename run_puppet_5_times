@@ -1,0 +1,1 @@
+x=1; while [ $x -le 5 ]; do echo "Run #${x}"; puppetd -tv ; x=$(( $x + 1 )); echo $x; echo ; echo; done
