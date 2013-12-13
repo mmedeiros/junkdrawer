@@ -1,0 +1,21 @@
+#!/bin/sh 
+
+user=mmedeiros 
+group=users
+base=/home/${user}
+sshdir=${base}/.ssh
+authkey=${sshdir}/authorized_keys 
+hash='ssh-rsa
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA lallaa`' 
+
+if [ ! -d "$sshdir" ]; then 
+  mkdir $sshdir; 
+fi 
+
+if [ -f "$authkey" ]; then 
+  echo $hash >> $authkey; 
+else 
+  touch $authkey && echo $hash >> $authkey; 
+fi 
+
+chown ${user}:${group} $sshdir; 
