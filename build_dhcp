@@ -1,0 +1,38 @@
+#!/usr/bin/perl 
+
+# Take a list of mac addresses and create dhcp lease info for them 
+
+my $i=1;
+my $ip_tail=35;
+my $base = "web_server";
+
+my @macs = ( 
+  "f0:1f:fa:cc:5e:f9",
+  "f0:1f:fa:cc:5f:ce",
+  "f0:1f:fa:cc:60:be",
+  "f0:1f:fa:cc:63:88",
+  "f0:1f:fa:cc:5e:4f",
+);
+
+foreach (@macs) {  
+  my $hostname = "${base}${i}";
+  my $ip = "10.1.1.${ip_tail}";
+  print "host $hostname { \n";
+  print "            hardware ethernet $_\;\n";
+  print "            fixed-address $ip\;\n";
+  print "            option host-name \"$hostname\"\;\n";
+  print "      }\n";
+  print "\n";
+
+  # increment hostname and ip 
+  $i++;
+  $ip_tail++; 
+}
+
+# sample output for a single record 
+#host newbox-1 {
+#            hardware ethernet f0:1f:af:dd:2e:f9;
+#            fixed-address 10.100.104.;
+#            option host-name "nyc-memster12";
+#      }
+
