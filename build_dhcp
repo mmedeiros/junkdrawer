@@ -2,9 +2,11 @@
 
 # Take a list of mac addresses and create dhcp lease info for them 
 
-my $i=1;
-my $ip_tail=35;
-my $base = "web_server";
+my $base = "web_server";    # base name for server
+my $network="10.100.100";   # network for the server  
+my $i=1;                    # starting digit of hostname
+my $ip_tail=35;             # starting digit of final ip octet
+my $digitcount=3;           # total digits in name 
 
 my @macs = ( 
   "f0:1f:fa:cc:5e:f9",
@@ -14,9 +16,10 @@ my @macs = (
   "f0:1f:fa:cc:5e:4f",
 );
 
-foreach (@macs) {  
-  my $hostname = "${base}${i}";
-  my $ip = "10.1.1.${ip_tail}";
+foreach (@macs) { 
+  my $digi = &leading_zeros ($i, $digitcount); 
+  my $hostname = "${base}${digi}";
+  my $ip = "${network}.${tail}";
   print "host $hostname { \n";
   print "            hardware ethernet $_\;\n";
   print "            fixed-address $ip\;\n";
@@ -36,3 +39,8 @@ foreach (@macs) {
 #            option host-name "nyc-memster12";
 #      }
 
+######### 
+sub leading_zeros { 
+  my $num = sprintf("%0$_[1]s", $_[0]); 
+  return $num; 
+} 
