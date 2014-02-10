@@ -1,0 +1,36 @@
+#!/usr/bin/perl 
+use strict; 
+
+# Restart web app if response time exceeds threshold 
+
+my $curlbase=`curl -o /dev/null -s -w %{time_total}\\n  localhost`;
+my $curltime = int($curlbase * 1000 );
+my $threshold=5;  # threshold at 5 seconds 
+#my $threshold=0;  # threshold at 0 seconds for testing
+my $timestamp=`date`;
+my $proc="/etc/init.d/httpd";
+my $logdump="";
+
+my $debug=0; 
+
+# debug info 
+if ($debug==1) {
+  print "curlbase = $curlbase\n";
+  print "curltime = $curltime\n";
+  print "threshold = $threshold (multiplied by 1000 for comparison)\n";
+  print "timestamp = $timestamp\n";
+  print "proc = $proc\n";
+}
+
+# is app returning fast enough? 
+
+if ($curltime > ($threshold * 1000) ) { 
+  #system ("$logdump"); ## TODO 
+  print "RESTART THE PROCESS!!!!!\n"; ##TODO 
+  #system ("$proc restart"); ## TODO 
+
+  if ($debug==1) { 
+    print "$proc restart\n"; 
+    print "$date restart triggered\n";
+  }
+}
