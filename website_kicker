@@ -31,6 +31,6 @@ if ($curltime > ($threshold * 1000) ) {
 
   if ($debug==1) { 
     print "$proc restart\n"; 
-    print "$date restart triggered\n";
+    print "$timestamp restart triggered\n";
   }
 }
