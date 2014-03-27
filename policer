@@ -1,0 +1,19 @@
+#!/bin/sh 
+
+# Restarts a process that is in a bad state 
+# as shown by trivial healthchecks timing out 
+
+process="nagios";
+healthcheck="sh echo_script"
+timeout="3"
+outcode=`timeout $timeout $healthcheck 2>&1 > /dev/null || echo "$?"` 
+
+if [[ "$outcode" =~ 124  ]] ; then 
+  echo "Healthcheck $healthcheck exceeded timeout"; 
+  echo "restart $process"; 
+  echo "service $process restart";  
+  # uncomment below to restart service 
+  #service $process restart  
+else 
+  echo "Service $process is healthy. Healthcheck returned OK"
+fi
