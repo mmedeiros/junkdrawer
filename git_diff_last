@@ -1,0 +1,24 @@
+#!/bin/sh 
+
+file=$1
+
+stub=$(basename "$file")
+dir=$(dirname "$file")
+now=$(date +%Y%m%d%H%M%S)
+tmpfile=${now}.tmp.txt
+
+cd $dir ;
+if [ -f ${tmpfile} ]; then 
+  rm ${tmpfile} 
+fi 
+
+git log $stub | grep commit | head -n 2 >> ${tmpfile}
+cur=$(head -n1 $tmpfile | cut -d' ' -f2)
+pre=$(tail -n1 $tmpfile | cut -d' ' -f2)
+rm ${tmpfile} 
+
+echo "Getting diff between two latest versions of $stub"
+
+git diff $pre $cur
+
+cd - 
