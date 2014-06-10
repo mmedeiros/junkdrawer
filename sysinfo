@@ -1,0 +1,18 @@
+#!/bin/sh 
+
+host=`hostname`
+os=`cat /etc/issue | head -n1`
+procs=`nproc`
+mem=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`
+kbtogb=1048576
+gbram=$(($mem/$kbtogb))
+
+echo "===== System Info ====="
+echo "Hostname: $host"
+echo "OS:  $os"
+echo "CPU: $procs"
+echo "RAM: $gbram GB"
+
+echo 
+echo "===== Disk usage ====="
+\df -hP | column -t
