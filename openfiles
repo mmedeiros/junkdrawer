@@ -1,0 +1,23 @@
+#!/bin/sh 
+# Get the open files for a given command 
+# and its children in one call 
+
+proc=$1 
+
+# Get the pid 
+pid=$(ps aux | grep $proc | grep -v grep | awk '{print $2}')
+
+echo "pid = $pid " 
+
+# Child pids
+pidlist=$(ps h --ppid $pid -o pid)
+         # ps h --ppid 24906 -o pid
+echo "pidlist = $pidlist"
+
+for i in $pidlist 
+do 
+echo "==== open files ===="
+  lsof -p $i | grep -v lib64
+  #lsof | grep $i | grep -v lib64
+done
+
