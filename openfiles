@@ -1,23 +1,39 @@
 #!/bin/sh 
+
 # Get the open files for a given command 
 # and its children in one call 
 
 proc=$1 
+#proc=rsync 
 
-# Get the pid 
-pid=$(ps aux | grep $proc | grep -v grep | awk '{print $2}')
+# Get the pid(s) 
+pid=$(ps aux | grep $proc | grep -v grep | grep -v $0 | awk '{print $2}' )
 
-echo "pid = $pid " 
+echo "pid(s) for process $proc:"
+echo "$pid"
 
-# Child pids
-pidlist=$(ps h --ppid $pid -o pid)
-         # ps h --ppid 24906 -o pid
-echo "pidlist = $pidlist"
+# make the pids an array in case there's more than one
+pids=($pid)
 
-for i in $pidlist 
-do 
 echo "==== open files ===="
-  lsof -p $i | grep -v lib64
-  #lsof | grep $i | grep -v lib64
+for pid in ${pids[@]}
+do 
+  # Child pids
+  childlist=$(ps h --ppid $pid -o pid)
+  # note    # ps h --ppid 24906 -o pid
+  # turn the string into an array 
+  kids=($childlist)
+  
+  for i in ${kids[@]}
+  #for i in $pidlist 
+
+  do  
+    count=$(lsof -p $i | grep -v lib64 | wc -l)
+    #echo "count is $count"
+    if [[ $count -gt 0 ]] ; then 
+      lsof -p $i | grep -v lib64 
+      #lsof | grep $i | grep -v lib64
+    fi  
+  done
 done
 
