@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use strict; 
+use warnings; 
+use Socket;
+use Data::Dumper;
+
+# Variables 
+my (%address, @bad_address);
+
+# Input is either a string or a file
+if (-e $ARGV[0]) {
+  open(INPUT, "$ARGV[0]") or die "Can't open $ARGV[0]: $!";
+} else { 
+  open INPUT, '<', \$ARGV[0];
+}
+
+# Get the values and push them to the good hash or the bad array
+while (<INPUT>) {
+  chomp $_; 
+  if (inet_aton($_)) { 
+    $address{$_} = inet_ntoa(inet_aton($_));
+  } else { 
+    push @bad_address, $_; 
+  }
+}
+
+# print the valid addresses, if any exist 
+if (%address) { 
+  print "valid addresses\n"; 
+  foreach my $key (sort keys %address) {
+    print "$key,$address{$key}\n";
+  }
+} else {
+  print "No valid addresses found!\n\n";
+}
+
+# print the invalid addresses, if any 
+if (@bad_address) { 
+  print "\ninvalid addresses\n"; 
+  foreach (@bad_address) { 
+    print "$_\n";
+  }
+}
