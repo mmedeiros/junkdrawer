@@ -1,0 +1,2 @@
+bash --version && env x='() { :;}; echo vulnerable' bash -c "echo this is a test" && sudo yum clean all && sudo yum update -y bash  && echo && env x='() { :;}; echo vulnerable' bash -c "echo this is a test" && bash --version
+
