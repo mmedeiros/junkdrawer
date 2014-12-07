@@ -1,0 +1,14 @@
+--- conf-man  2014-04-01 22:58:19.000000000 +0000
++++ conf-man.new  2014-06-30 23:27:22.543645514 +0000
+@@ -1,4 +1,4 @@
+-/usr/local/man
++/usr/share/man
+ 
+ Man pages will be installed in subdirectories of this directory. An
+ unformatted man page foo.1 will go into .../man1/foo.1.
+--- conf-bin  2014-04-01 22:58:19.000000000 +0000
++++ conf-bin.new  2014-06-30 23:26:40.786972103 +0000
+@@ -1,3 +1,3 @@
+-/usr/local/bin
++/usr/sbin
+
