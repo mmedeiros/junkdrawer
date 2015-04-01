@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+# check for whitespace errors
+git_ws_check = `git diff-index --check --cached HEAD --`
+unless $?.success?
+  puts git_ws_check
+  exit 1
+end
+
+COOKBOOK_PATH = File.split `git rev-parse --show-toplevel`
+PARENT_PATH = COOKBOOK_PATH[0]
+COOKBOOK_NAME = COOKBOOK_PATH[1].chomp # remove trailing newline
+
+puts 'Running knife...'
+knife_output = `knife cookbook test #{ COOKBOOK_NAME } -o #{ PARENT_PATH } -c ~/.chef/knife.rb 2>&1`
+unless $?.success?
+  puts knife_output
+  exit 1
+end
+
+puts 'Running rubocop...'
+`rubocop -s >/dev/null 2>&1 `
+unless $?.success?
+  puts 'rubocop NOT found... installing...'
+  `yes | gem install rubocop`
+  unless $?.success?
+    puts 'Rubocop installation failure, please try'
+    puts '  gem install rubocop'
+    puts 'to resolve'
+  end
+end
+
+# Get the names of (A)dded, (C)opied, (M)odified Ruby files
+STAGED_FILES = `git diff-index --name-only --diff-filter=ACM HEAD -- '*.rb'`
+STAGED_FILES.lines do |file|
+  file.chomp! # remove carriage returns
+  puts "  Rubocop validating file: #{file}"
+    rubocop_output = `rubocop #{ file }`
+    unless $?.success?
+      puts rubocop_output
+      exit 1
+    end
+end
+
+puts "Running foodcritic..."
+fc_output = `foodcritic --epic-fail any #{ File.join(PARENT_PATH, COOKBOOK_NAME) }`
+unless $?.success?
+  puts "  #{fc_output}"
+  exit 1
+end
