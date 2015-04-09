@@ -1,0 +1,67 @@
+#!/bin/bash
+
+while [[ $# > 1 ]]
+do
+  key="$1"
+  case $key in
+    -m|--min)
+      cmin="$2"
+      shift
+      ;;
+    -n|--max)
+      cmax="$2"
+      shift
+      ;;
+    -d|--debug)
+      debug=1
+      ;;
+    *)
+      ;;
+  esac
+  shift
+done
+
+# ps aux | grep [y]um"
+proc_count () {
+  word=$1
+  if [ $# -eq 0 ]; then
+    ps aux | wc -l
+  else
+    front=$(echo $word | cut -c 1)
+    back=$(echo $word | cut -c 2-)
+    str="[$front]$back"
+    count=$(ps axwwo 'comm args' | grep -i $str | grep -v $0 | wc -l)
+    #some wc implementations have leading whitespace
+    count="$(echo -e "$count" | tr -d '[[:space:]]')"
+  fi
+}
+
+compare_count() {
+  if [[ $count -ge $cmin ]]; then
+    if [[ $count -le $cmax ]]; then
+      echo "OK - Count for process $word is $count (range $cmin - $cmax)"
+      exit 0
+    else
+      echo "CRITICAL - Too many $word processes running! count: $count max: $cmax"
+      exit 2
+    fi
+  else
+    echo "CRITICAL - Not enough $word processes running! count: $count min: $cmin"
+    exit 2
+  fi
+}
+
+print_debug_info() {
+  echo "cmin is $cmin"
+  echo "cmax is $cmax"
+  echo "word is $word"
+  echo "str = $str"
+  echo "count is $count"
+}
+
+proc_count $1
+if [[ $debug -eq 1 ]]; then
+  print_debug_info
+fi
+compare_count
+exit 0
