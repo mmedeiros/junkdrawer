@@ -8,4 +8,11 @@ url=https://github.com/$gituser/dotfiles/archive/master.tar.gz
 path=/home/$localuser
 tmp=dot.tar.gz
 
-echo "curl -L $url >>$tmp 2>/dev/null && tar -xzf $tmp && mv -f dotfiles-master/.[^.]* $path && rm -rf $path/dotfiles-master && rm $tmp && source $path/.bashrc"
+command="curl -L $url >>$tmp 2>/dev/null && \
+          tar -xzf $tmp && \
+          mv -f dotfiles-master/.[^.]* $path && \
+          rm -rf $path/dotfiles-master && \
+          rm $tmp && \
+          source $path/.bashrc"
+
+echo "$command" | tr -s ' '
