@@ -1,0 +1,19 @@
+#!/bin/bash
+
+get_code() {
+  code=$(curl -sL  -w "%{http_code}" "$url" -o /dev/null) ;
+  echo "$code"
+}
+
+build_url() {
+  if [[ "$1" =~ https?:// ]] ; then
+    url="$1";
+  elif [[ "$1" =~ \. ]] ; then
+    url="http://$1";
+  else
+    url="http://$1.com";
+  fi
+}
+
+build_url "$@"
+get_code "$url"
