@@ -1,17 +1,22 @@
 #!/bin/sh
 
+# user info
 gituser=mmedeiros    # user on github
 localuser=mmedeiros  # user on the box
 
+# Git info
+repo='dotfiles'
+branch='master'
+
 # Derived variables
-url=https://github.com/$gituser/dotfiles/archive/master.tar.gz
+url="https://github.com/$gituser/$repo/archive/$branch.tar.gz"
 path=/home/$localuser
 tmp=dot.tar.gz
 
 command="curl -L $url >>$tmp 2>/dev/null && \
           tar -xzf $tmp && \
-          mv -f dotfiles-master/.[^.]* $path && \
-          rm -rf $path/dotfiles-master && \
+          mv -f ${repo}-${branch}/.[^.]* $path && \
+          rm -rf $path/${repo}-${branch} && \
           rm $tmp && \
           source $path/.bashrc"
 
