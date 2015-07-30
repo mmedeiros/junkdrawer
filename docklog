@@ -1,0 +1,10 @@
+#!/bin/sh
+
+docklog() {
+  id=$(docker ps --all=true | grep "$1" | head -n1 | awk '{print $1}')
+  echo "----- docker log for $id -----"
+  docker logs "$id"
+  echo
+}
+
+docklog "$*"

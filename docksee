@@ -1,0 +1,10 @@
+#!/bin/sh
+
+docksee() {
+  id=$(docker ps --all=true | grep "$1" | head -n1 | awk '{print $1}')
+  echo "----- docker inspect for $id -----"
+  docker inspect "$id"
+  echo
+}
+
+docksee "$*"

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+docknuke() {
+  echo "Nuking all docker containers!"
+  for i in `docker ps --all=true | grep -v CONTAINER | awk '{print $1}'`
+    do
+      docker rm -f "$i";
+    done
+  echo
+}
+
+docknuke "$*"
+
