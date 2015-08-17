@@ -1,0 +1,11 @@
+#!/bin/sh
+
+dockssh() {
+  id=$(docker ps --all=true | grep "$1" | head -n1 | awk '{print $1}')
+  echo "----- connecting to docker $id -----"
+  docker exec -ti "$id" sh
+  echo
+}
+
+dockssh "$*"
+
