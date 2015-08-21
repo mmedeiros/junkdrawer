@@ -12,6 +12,10 @@ branch='master'
 url="https://github.com/$gituser/$repo/archive/$branch.tar.gz"
 path=/home/$localuser
 tmp=dot.tar.gz
+vimdir="/usr/share/vim/vim74/"
+
+cleanup="rm -rf $path/.vim* && \
+          rm -rf $path/.bash* "
 
 command="curl -L $url >>$tmp 2>/dev/null && \
           tar -xzf $tmp && \
@@ -20,4 +24,6 @@ command="curl -L $url >>$tmp 2>/dev/null && \
           rm $tmp && \
           source $path/.bashrc"
 
-echo "$command" | tr -s ' '
+vimcolors="sudo cp -n $path/.vim/colors/* $vimdir/colors/"
+
+echo "$cleanup && $command && $vimcolors" | tr -s ' '
