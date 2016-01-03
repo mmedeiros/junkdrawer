@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+# Restart bprobe if it exceeds memory threshold
+
+my $proc="/etc/init.d/bprobe";
+my $lockfile="/var/lock/subsys/bprobe";
+my $status =`$proc status`;
+chomp $status;
+my $threshold=10;  # threshold at 10% cpu
+my $debug=0;
+
+# if bprobe is running, is it running too hot?
+if ($status =~m/bprobe daemon is running/) {
+  my $pidfile="/var/run/bprobe.pid";
+  my $pid=`/bin/cat $pidfile`;
+  my $percent=`/bin/ps -p $pid -o %cpu | grep -iv cpu`;
+  chomp $percent;
+
+  # debug info
+  if ($debug==1) {
+    print "status = $status\n";
+    print "pid = $pid\n";
+    print "percent = $percent\n";
+    print "threshold = $threshold \n";
+  }
+
+  if ($percent > $threshold ) {
+    system ("$proc restart");
+    if ($debug==1) {
+      print "$proc restart\n";
+      print "restart triggered\n";
+    }
+  }
+# if it's not running, clear lock and restart
+} elsif ($status =~m/bprobe daemon is not running/) {
+  if ($debug==1) {
+    print "status = $status\n";
+  }
+
+  if (-e $lockfile) {
+    #if ($status =~m/lock file .* exists/) {
+    print system ("rm -f $lockfile");
+    print "lock deletion triggered\n" if $debug==1;
+  }
+  system ("$proc start");
+  print "start triggered\n" if $debug==1;
+}
