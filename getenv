@@ -11,7 +11,7 @@ branch='master'
 # Derived variables
 url="https://github.com/$gituser/$repo/archive/$branch.tar.gz"
 path=/home/$localuser
-tmp=dot.tar.gz
+tmp=${path}/dot.tar.gz
 vimdir="/usr/share/vim/vim74/"
 
 cleanup="rm -rf $path/.vim* && \
@@ -19,11 +19,14 @@ cleanup="rm -rf $path/.vim* && \
 
 command="curl -L $url >>$tmp 2>/dev/null && \
           tar -xzf $tmp && \
-          mv -f ${repo}-${branch}/.[^.]* $path && \
-          rm -rf $path/${repo}-${branch} && \
+          mv -f ${path}/${repo}-${branch}/.[^.]* $path && \
+          rm -rf ${path}/${repo}-${branch} && \
           rm $tmp && \
           source $path/.bashrc"
 
 vimcolors="sudo cp -n $path/.vim/colors/* $vimdir/colors/"
 
-echo "$cleanup && $command && $vimcolors" | tr -s ' '
+mktemp="if [ ! -d ${path}/tmp ]; then mkdir ${path}/tmp; fi"
+mkbin="if [ ! -d ${path}/bin ]; then mkdir ${path}/bin; fi"
+
+echo "$cleanup && $command && $vimcolors && $mktemp && $mkbin" | tr -s ' '
