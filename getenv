@@ -28,5 +28,6 @@ vimcolors="sudo cp -n $path/.vim/colors/* $vimdir/colors/"
 
 mktemp="if [ ! -d ${path}/tmp ]; then mkdir ${path}/tmp; fi"
 mkbin="if [ ! -d ${path}/bin ]; then mkdir ${path}/bin; fi"
+mkgit="if [ ! -d ${path}/git_repos ]; then mkdir ${path}/git_repos; fi"
 
 echo "$cleanup && $command && $vimcolors && $mktemp && $mkbin" | tr -s ' '
